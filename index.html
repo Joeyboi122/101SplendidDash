@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Splendid Dashboard</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            height: 100%;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f1f1f1;
+            padding: 20px;
+            height: 100%;
+            position: fixed;
+            top: 40px;
+            overflow-y: auto;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 200px;
+            margin-top: 40px;
+        }
+        h1, h2 {
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        input, button {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Splendid</h1>
+    </header>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Apps</h2>
+            <ul id="appList"></ul>
+            <input type="text" id="newApp" placeholder="New app name">
+            <button onclick="addApp()">Add App</button>
+        </div>
+        <div class="main-content">
+            <h2>Codes (Your Account)</h2>
+            <input type="text" id="codeKey" placeholder="Code key">
+            <input type="text" id="codeValue" placeholder="Code value">
+            <button onclick="saveCode()">Save Code</button>
+            <ul id="codeList"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Load data from localStorage
+        let apps = JSON.parse(localStorage.getItem('apps')) || [];
+        let codes = JSON.parse(localStorage.getItem('codes')) || {};
+
+        // Render initial data
+        renderApps();
+        renderCodes();
+
+        function addApp() {
+            const newApp = document.getElementById('newApp').value;
+            if (newApp) {
+                apps.push(newApp);
+                localStorage.setItem('apps', JSON.stringify(apps));
+                renderApps();
+                document.getElementById('newApp').value = '';
+            }
+        }
+
+        function saveCode() {
+            const key = document.getElementById('codeKey').value;
+            const value = document.getElementById('codeValue').value;
+            if (key && value) {
+                codes[key] = value;
+                localStorage.setItem('codes', JSON.stringify(codes));
+                renderCodes();
+                document.getElementById('codeKey').value = '';
+                document.getElementById('codeValue').value = '';
+            }
+        }
+
+        function renderApps() {
+            const appList = document.getElementById('appList');
+            appList.innerHTML = apps.map(app => `<li>${app}</li>`).join('');
+        }
+
+        function renderCodes() {
+            const codeList = document.getElementById('codeList');
+            codeList.innerHTML = Object.entries(codes).map(([key, value]) => `<li>${key}: ${value}</li>`).join('');
+        }
+    </script>
+</body>
+</html>
